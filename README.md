@@ -1,4 +1,4 @@
-# Grafos1_Codeforces
+# Grafos1_GradeUnB
 
 **Número da Lista**: X<br>
 **Conteúdo da Disciplina**: XXXXXXXXXX<br>
