@@ -34,3 +34,23 @@ class Grafo:
             concluidas.update(recomendacoes_semestre)
             semestre += 1 
         return recomendacoes
+    
+    def ordenacao_topologica(self):
+        grau_entrada = {materia: 0 for materia in self.grafo}
+        for materia in self.grafo:
+            for req in self.grafo[materia]:
+                grau_entrada[req] += 1
+        
+        fila = deque([materia for materia in self.grafo if grau_entrada[materia] == 0])
+        ordenacao = []
+
+        while fila:
+            materia = fila.popleft()
+            ordenacao.append(materia)
+
+            for vizinho in self.grafo[materia]:
+                grau_entrada[vizinho] -= 1
+                if grau_entrada[vizinho] == 0:
+                    fila.append(vizinho)
+
+        return ordenacao if len(ordenacao) == len(self.grafo) else None
