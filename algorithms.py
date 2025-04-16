@@ -54,3 +54,33 @@ class Grafo:
                     fila.append(vizinho)
 
         return ordenacao if len(ordenacao) == len(self.grafo) else None
+    
+    def encontrar_cadeias(self):
+        ordenacao = self.ordenacao_topologica()
+        if not ordenacao:
+            return []
+        
+        todas_cadeias = []
+
+        def explorar_cadeias(materia, caminho_atual):
+            caminho_atual.append(materia)
+
+            if not self.grafo[materia]:
+                if len(caminho_atual) > 1:
+                    todas_cadeias.append(caminho_atual.copy())
+                caminho_atual.pop()
+                return
+            
+            for pre_requisito in self.grafo[materia]:
+                    explorar_cadeias(pre_requisito, caminho_atual)
+
+            caminho_atual.pop()
+
+        nos_finais = [no for no in ordenacao if not any(no in self.grafo[outro] for outro in self.grafo)]
+        for no_final in nos_finais:
+            explorar_cadeias(no_final, [])
+
+        return todas_cadeias
+    
+
+    
