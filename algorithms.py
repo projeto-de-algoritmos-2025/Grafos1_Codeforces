@@ -53,7 +53,10 @@ class Grafo:
                 if grau_entrada[vizinho] == 0:
                     fila.append(vizinho)
 
-        return ordenacao if len(ordenacao) == len(self.grafo) else None
+        if len(ordenacao) != len(self.grafo):
+            return None
+
+        return ordenacao 
     
     def encontrar_cadeias(self):
         ordenacao = self.ordenacao_topologica()
