@@ -80,7 +80,19 @@ class Grafo:
         for no_final in nos_finais:
             explorar_cadeias(no_final, [])
 
-        return todas_cadeias
-    
+        cadeias_maximas = []
+        todas_cadeias.sort(key=len, reverse=True)
 
-    
+        for cadeia in todas_cadeias:
+            cadeia_set = set(cadeia)
+            if not any(cadeia_set.issubset(set(c)) and len(cadeia) < len(c) for c in todas_cadeias):
+                cadeias_maximas.append(cadeia[::-1])
+
+        cadeias_finais = []
+        for cadeia in cadeias_maximas:
+            cadeia_set = set(cadeia)
+            if not any(cadeia_set.issubset(set(c)) and len(cadeia) < len(c) for c in cadeias_maximas):
+                cadeias_finais.append(cadeia)
+
+        cadeias_finais.sort(key=lambda x: ordenacao.index(x[0]))
+        return cadeias_finais
