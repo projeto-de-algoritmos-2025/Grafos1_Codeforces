@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recomendador de Matérias</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>📚 Recomendador Acadêmico</h1>
+            <p class="subtitle">Planejamento inteligente de grade</p>
+            <p class="subtitle">em Engenharia de Software na FCTE</p>
+            
+        </header>
+
+        <main class="app-content">
+            <section class="selection-panel glassmorphism">
+                <h2>Selecione suas matérias concluídas/em andamento</h2>
+                <div id="materias-container" class="materias-grid"></div>
+                
+                <div class="input-group">
+                    <label for="semestre-atual">Próximo Semestre</label>
+                    <input type="number" id="semestre-atual" min="1" max="20" value="1">
+                </div>
+                
+                <button id="calcular-btn" class="primary-button">
+                    <span class="button-text">Gerar Recomendações</span>
+                    <span class="button-icon">→</span>
+                </button>
+            </section>
+
+            <section class="results-panel">
+                <div class="results-tabs">
+                    <button class="tab-button active" data-tab="recomendacoes">Recomendações</button>
+                    <button class="tab-button" data-tab="cadeias">Pré-requisitos</button>
+                    <a href="grafo.html" class="tab-button" data-tab="grafo">Visualizar Grafo do fluxograma</a>
+                </div>
+
+                <div id="recomendacoes-container" class="tab-content active"></div>
+                <div id="cadeias-container" class="tab-content"></div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>Sistema de recomendação baseado em grafos - © 2025</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
