@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualização do Grafo - Recomendador Acadêmico</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        .app-content {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .graph-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background-color: #f8f9fa;
+        }
+        
+        .graph-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .graph-image {
+            max-width: none;
+            max-height: none;
+            transition: transform 0.1s ease;
+            cursor: grab;
+        }
+        
+        .graph-image:active {
+            cursor: grabbing;
+        }
+        
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .control-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #4a6bdf;
+            color: white;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+        
+        .control-btn:hover {
+            background-color: #3a56c0;
+            transform: scale(1.1);
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            padding: 0.8rem 1.5rem;
+            background-color: #4a6bdf;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background-color: #3a56c0;
+            transform: translateY(-2px);
+        }
+        
+        .graph-title {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 10;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 0 auto;
+            width: fit-content;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>🔍 Visualização do Grafo de Matérias</h1>
+            <p class="subtitle">Relação de pré-requisitos entre disciplinas</p>
+        </header>
+
+        <main class="app-content">
+            <div class="graph-container">
+                <div class="graph-title">
+                    <h2>Grafo do curso de Engenharia de Software na FCTE </h2>
+                    <p>Use o mouse para arrastar e a roda para zoom</p>
+                </div>
+                
+                <a href="index.html" class="back-button">Voltar ao Recomendador</a>
+                
+                <div class="graph-wrapper">
+                    <img src="grafo.png" alt="Grafo de dependências entre matérias" class="graph-image" id="graph-image">
+                </div>
+                
+                <div class="controls">
+                    <button class="control-btn" id="zoom-in">+</button>
+                    <button class="control-btn" id="zoom-out">-</button>
+                    <button class="control-btn" id="reset-zoom">↻</button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <p>Sistema de recomendação baseado em grafos - © 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const image = document.getElementById('graph-image');
+            const zoomInBtn = document.getElementById('zoom-in');
+            const zoomOutBtn = document.getElementById('zoom-out');
+            const resetZoomBtn = document.getElementById('reset-zoom');
+            
+            let scale = 1;
+            let posX = 0;
+            let posY = 0;
+            let isDragging = false;
+            let startX, startY;
+            
+            function applyTransform() {
+                image.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+            }
+            
+            zoomInBtn.addEventListener('click', function() {
+                scale *= 1.2;
+                applyTransform();
+            });
+            
+            zoomOutBtn.addEventListener('click', function() {
+                scale /= 1.2;
+                applyTransform();
+            });
+            
+            resetZoomBtn.addEventListener('click', function() {
+                scale = 1;
+                posX = 0;
+                posY = 0;
+                applyTransform();
+            });
+            
+            image.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                
+                const rect = image.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                const delta = e.deltaY < 0 ? 1.1 : 0.9;
+                
+                const mouseXBefore = (mouseX - posX) / scale;
+                const mouseYBefore = (mouseY - posY) / scale;
+                
+                scale *= delta;
+                
+                scale = Math.max(0.1, Math.min(scale, 10));
+                
+                posX = mouseX - mouseXBefore * scale;
+                posY = mouseY - mouseYBefore * scale;
+                
+                applyTransform();
+            });
+            
+            image.addEventListener('mousedown', function(e) {
+                if (e.button === 0) { 
+                    isDragging = true;
+                    startX = e.clientX - posX;
+                    startY = e.clientY - posY;
+                    image.style.cursor = 'grabbing';
+                }
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (isDragging) {
+                    posX = e.clientX - startX;
+                    posY = e.clientY - startY;
+                    applyTransform();
+                }
+            });
+            
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+                image.style.cursor = 'grab';
+            });
+            
+            let touchStartX, touchStartY, touchStartPosX, touchStartPosY;
+            
+            image.addEventListener('touchstart', function(e) {
+                if (e.touches.length === 1) {
+                    const touch = e.touches[0];
+                    touchStartX = touch.clientX;
+                    touchStartY = touch.clientY;
+                    touchStartPosX = posX;
+                    touchStartPosY = posY;
+                    e.preventDefault();
+                }
+            });
+            
+            image.addEventListener('touchmove', function(e) {
+                if (e.touches.length === 1) {
+                    const touch = e.touches[0];
+                    posX = touchStartPosX + (touch.clientX - touchStartX);
+                    posY = touchStartPosY + (touch.clientY - touchStartY);
+                    applyTransform();
+                    e.preventDefault();
+                }
+            });
+            
+            window.addEventListener('load', function() {
+                const container = document.querySelector('.graph-wrapper');
+                const imgWidth = image.naturalWidth;
+                const imgHeight = image.naturalHeight;
+                
+                posX = (container.clientWidth - imgWidth) / 2;
+                posY = (container.clientHeight - imgHeight) / 2;
+                applyTransform();
+            });
+        });
+    </script>
+</body>
+</html>
