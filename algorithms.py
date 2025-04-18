@@ -1,5 +1,6 @@
 from collections import deque
 
+
 class Grafo:
     def __init__(self, materias):
         self.grafo = {}
@@ -18,7 +19,7 @@ class Grafo:
         semestre = semestre_atual
         concluidas = set(cursadas)
 
-        while True: 
+        while True: # Filtra matérias que os pré-requisitos já foram concluídos
             disponiveis = [
                 materia for materia in self.grafo
                 if materia not in concluidas and 
@@ -27,7 +28,8 @@ class Grafo:
 
             if not disponiveis:
                 break 
-
+            
+            # Ordenade acordo com recomendação do semestre
             disponiveis.sort(key=lambda x: self.semestres[x])
             recomendacoes_semestre = disponiveis[:max_por_semestre]
             recomendacoes[f"Semestre {semestre}"] = recomendacoes_semestre
@@ -86,6 +88,7 @@ class Grafo:
         cadeias_maximas = []
         todas_cadeias.sort(key=len, reverse=True)
 
+         # Filtra apenas as maiores cadeias únicas
         for cadeia in todas_cadeias:
             cadeia_set = set(cadeia)
             if not any(cadeia_set.issubset(set(c)) and len(cadeia) < len(c) for c in todas_cadeias):
@@ -97,5 +100,6 @@ class Grafo:
             if not any(cadeia_set.issubset(set(c)) and len(cadeia) < len(c) for c in cadeias_maximas):
                 cadeias_finais.append(cadeia)
 
+        # Ordena cadeias conforme a ordem topológica
         cadeias_finais.sort(key=lambda x: ordenacao.index(x[0]))
         return cadeias_finais
