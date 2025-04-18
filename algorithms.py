@@ -14,7 +14,7 @@ class Grafo:
             self.nomes[sigla] = materia['nome']
 
 
-    def bfs_recomendacao(self, cursadas, semestre_atual, max_por_semestre=5):
+    def bfs_recomendacao(self, cursadas, semestre_atual, max_por_semestre=6):
         recomendacoes = {}
         semestre = semestre_atual
         concluidas = set(cursadas)
