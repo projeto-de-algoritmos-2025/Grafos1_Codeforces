@@ -36,8 +36,8 @@ O trabalho em questão foi projetado afim de aprofundar os estudos de Grafos na 
 - Visualize as cadeias de pré-requisitos do curso e quais você já cumpriu
 - Visualize o grafo do fluxograma
 
-## Outros 
-Quaisquer outras informações sobre seu projeto podem ser descritas abaixo.
+## Video Apresentação
+https://youtu.be/Rq2DuNHrmwo
 
 
 
